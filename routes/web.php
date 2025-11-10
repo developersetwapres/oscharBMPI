@@ -13,14 +13,14 @@ Route::get('/', function () {
     return redirect()->route('layanan.home');
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:pegawai'])->group(function () {
     Route::get('/home', [LayananController::class, 'home'])->name('layanan.home');
     Route::get('/layanan', [LayananController::class, 'create'])->name('layanan.create');
     Route::post('layanan/store', [LayananController::class, 'store'])->name('layanan.store');
 });
 
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:administrator'])->group(function () {
     Route::get('/dashboard', [LayananController::class, 'dashboard'])->name('dashboard');
 
     Route::get('/dashboard/layanan/{layanan}', [LayananController::class, 'index'])->name('layanan.index');

@@ -6,6 +6,7 @@ use App\Models\Layanan;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,17 +15,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Layanan::factory(100)->create();
 
-        User::firstOrCreate(
-            ['email' => 'admin.oscarbpmi@set.wapresri.go.id'],
-            [
-                'name' => 'Admin Oscar BPMI',
-                'jabatan' => 'Administrator',
-                'role' => 'administrator',
-                'password' => 'P4ssw0rd',
-                'email_verified_at' => now(),
-            ]
-        );
+        User::create([
+            'email' => 'admin.oscarbpmi@set.wapresri.go.id',
+            'name' => 'Admin Oscar BPMI',
+            'jabatan' => 'Administrator',
+            'role' => 'administrator',
+            'password' => Hash::make('P4ssw0rd'),
+            'email_verified_at' => now(),
+        ]);
+
+        User::create([
+            'email' => 'user.oscarbpmi@set.wapresri.go.id',
+            'name' => 'Pegawai Setwapres',
+            'jabatan' => 'User',
+            'role' => 'pegawai',
+            'password' => Hash::make('Osc4rbpm1'),
+            'email_verified_at' => now(),
+        ]);
+
+        Layanan::factory(47)->create();
     }
 }

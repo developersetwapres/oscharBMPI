@@ -36,6 +36,29 @@ export default function UserPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-tr from-white via-background to-blue-100">
+            <div className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-md">
+                <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
+                    <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100">
+                            <img
+                                src="/image/logo.png"
+                                alt="Logo"
+                                className="h-full w-full"
+                            />
+                        </div>
+                        <h2 className="text-sm font-semibold text-foreground md:text-base">
+                            Oscar BPMI
+                        </h2>
+                    </div>
+                    <Link href="/">
+                        <button className="flex items-center gap-2 rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted">
+                            <LogOut className="h-4 w-4" />
+                            Kembali
+                        </button>
+                    </Link>
+                </div>
+            </div>
+
             <div className="spacae-y-8 mx-auto max-w-3xl px-4 py-8 md:py-12">
                 <div className="mx-auto max-w-2xl">
                     <div className="mb-12 text-center">
@@ -163,13 +186,6 @@ export default function UserPage() {
                         </CardContent>
                     </Card>
                 </div>
-
-                <Link href="/">
-                    <button className="fixed top-4 left-4 flex items-center gap-2 rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted">
-                        <LogOut className="h-4 w-4" />
-                        Kembali
-                    </button>
-                </Link>
             </div>
         </div>
     );

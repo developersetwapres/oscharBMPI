@@ -92,7 +92,7 @@ class LayananController extends Controller
     public function home(): Response
     {
         $data = [
-            //
+            'requests' => Layanan::where('user_id', Auth::id())->with('user')->take(100)->get(),
         ];
 
         return Inertia::render('user/home', $data);

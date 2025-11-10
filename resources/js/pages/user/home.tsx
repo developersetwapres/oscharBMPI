@@ -1,61 +1,55 @@
 'use client';
 
+import { Pagination } from '@/components/oscar/pagination';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
+import { logout } from '@/routes';
 import { create } from '@/routes/layanan';
 import { SharedData } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
-import { AlertCircle, CheckCircle, Clock, FileText } from 'lucide-react';
+import { Link, router, usePage } from '@inertiajs/react';
 
-export default function UserHomePage() {
+import {
+    AlertCircle,
+    CheckCircle,
+    Clock,
+    FileText,
+    LogOut,
+} from 'lucide-react';
+import { useMemo, useState } from 'react';
+
+export default function UserHomePage({ requests }: any) {
     const { auth } = usePage<SharedData>().props;
 
-    const requests = [
-        {
-            id: 2,
-            kategori: 'Pengadaan Logistik',
-            detail: 'Permintaan pembelian alat kantor',
-            tanggal: '2024-10-28',
-            status: 'Selesai',
-            statusColor: 'bg-green-100 text-green-700',
-            statusIcon: CheckCircle,
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+
+    const statusMap: Record<string, { color: string; icon: any }> = {
+        Selesai: {
+            color: 'bg-green-100 text-green-700',
+            icon: CheckCircle,
         },
-        {
-            id: 3,
-            kategori: 'Kepegawaian',
-            detail: 'Permohonan izin cuti tahunan',
-            tanggal: '2024-10-15',
-            status: 'Proses',
-            statusColor: 'bg-blue-100 text-blue-700',
-            statusIcon: Clock,
+        Proses: {
+            color: 'bg-blue-100 text-blue-700',
+            icon: Clock,
         },
-        {
-            id: 4,
-            kategori: 'Persuratan',
-            detail: 'Pengajuan surat rekomendasi',
-            tanggal: '2024-10-05',
-            status: 'Menunggu',
-            statusColor: 'bg-yellow-100 text-yellow-700',
-            statusIcon: AlertCircle,
+        Menunggu: {
+            color: 'bg-yellow-100 text-yellow-700',
+            icon: AlertCircle,
         },
-        {
-            id: 5,
-            kategori: 'Keuangan',
-            detail: 'Laporan keuangan bulanan',
-            tanggal: '2024-09-30',
-            status: 'Selesai',
-            statusColor: 'bg-green-100 text-green-700',
-            statusIcon: CheckCircle,
-        },
-        {
-            id: 6,
-            kategori: 'Pengadaan Logistik',
-            detail: 'Inventaris barang rutin',
-            tanggal: '2024-09-20',
-            status: 'Selesai',
-            statusColor: 'bg-green-100 text-green-700',
-            statusIcon: CheckCircle,
-        },
-    ];
+    };
+
+    const cleanup = useMobileNavigation();
 
     const categoryIcons: Record<string, string> = {
         Keuangan: '💰',
@@ -64,8 +58,75 @@ export default function UserHomePage() {
         Persuratan: '📄',
     };
 
+    const paginatedData = useMemo(() => {
+        const totalPages = Math.ceil(requests.length / itemsPerPage);
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedRequests = requests.slice(startIndex, endIndex);
+
+        return { paginatedRequests, totalPages };
+    }, [requests, currentPage, itemsPerPage]);
+
     return (
         <div className="min-h-screen bg-gradient-to-tr from-white via-background to-blue-100">
+            <div className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-md">
+                <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
+                    <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100">
+                            <img
+                                src="/image/logo.png"
+                                alt="Logo"
+                                className="h-full w-full"
+                            />
+                        </div>
+                        <h2 className="text-sm font-semibold text-foreground md:text-base">
+                            Oscar BPMI
+                        </h2>
+                    </div>
+
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                            >
+                                <LogOut className="h-4 w-4" />
+                                Log out
+                            </Button>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Konfirmasi Logout
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Apakah Anda yakin ingin keluar dari akun
+                                    Anda?
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+
+                            <div className="flex gap-3">
+                                <AlertDialogCancel>Batal</AlertDialogCancel>
+
+                                <AlertDialogAction
+                                    onClick={() => {
+                                        cleanup();
+                                        router.visit(logout(), {
+                                            method: 'post',
+                                        });
+                                    }}
+                                    className="bg-red-600 hover:bg-red-700"
+                                >
+                                    Logout
+                                </AlertDialogAction>
+                            </div>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </div>
+            </div>
+
             <div className="spacae-y-8 mx-auto max-w-3xl px-4 py-8 md:py-12">
                 <div className="mb-12 text-center md:mb-16">
                     <div className="mb-6 flex justify-center">
@@ -164,8 +225,11 @@ export default function UserHomePage() {
 
                 {/* Requests List */}
                 <div className="space-y-4 pb-8">
-                    {requests.map((request) => {
-                        const StatusIcon = request.statusIcon;
+                    {paginatedData.paginatedRequests.map((request) => {
+                        const s =
+                            statusMap[request.status] || statusMap['Menunggu']; // fallback
+                        const StatusIcon = s.icon;
+
                         return (
                             <Card
                                 key={request.id}
@@ -189,7 +253,7 @@ export default function UserHomePage() {
                                                     </p>
                                                 </div>
                                                 <div
-                                                    className={`flex flex-shrink-0 items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${request.statusColor}`}
+                                                    className={`flex flex-shrink-0 items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${s.color}`}
                                                 >
                                                     <StatusIcon className="h-3 w-3 md:h-4 md:w-4" />
                                                     {request.status}
@@ -213,6 +277,16 @@ export default function UserHomePage() {
                         );
                     })}
                 </div>
+
+                {requests.length > 0 && (
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={paginatedData.totalPages}
+                        onPageChange={setCurrentPage}
+                        totalItems={requests.length}
+                        itemsPerPage={itemsPerPage}
+                    />
+                )}
             </div>
         </div>
     );

@@ -18,7 +18,7 @@ class LayananFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
+            'user_id' => 2,
             'tanggal' => $this->faker->date(),
             'kategori' => $this->faker->randomElement(['Pengadaan Logistik', 'Persuratan', 'Kepegawaian' . 'Keuangan']),
             'status' => $this->faker->randomElement(['Proses', 'Selesai', 'Menunggu']),
