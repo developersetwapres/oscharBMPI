@@ -6,6 +6,7 @@ use App\Models\Layanan;
 use Inertia\Response;
 use App\Http\Requests\StoreLayananRequest;
 use App\Http\Requests\UpdateLayananRequest;
+use App\Models\KategoriLayanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -15,13 +16,12 @@ class LayananController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($layanan): Response
+    public function index(KategoriLayanan $kategoriLayanan): Response
     {
-        $judul = ucwords(str_replace('-', ' ', $layanan));
 
         $data = [
-            'judul' => $judul,
-            'services' => Layanan::where('kategori', $judul)->with('user')->get(),
+            'judul' => $kategoriLayanan->nama_kategori,
+            'services' => Layanan::where('kategori_layanan_id', $kategoriLayanan->id)->with('user')->latest()->take(100)->get(),
         ];
 
         return Inertia::render('admin/layanan/page', $data);
@@ -32,20 +32,25 @@ class LayananController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('user/form');
+        $data = [
+            'kategoriLayanan' => KategoriLayanan::select(['nama_kategori', 'kode_kategori'])->get(),
+        ];
+
+        return Inertia::render('user/form', $data);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLayananRequest $request)
+    public function store(StoreLayananRequest $request, KategoriLayanan $kategoriLayanan)
     {
         Layanan::create([
             'user_id' => Auth::id(),
-            'tanggal' => $request->tanggal,
-            'kategori' => $request->kategori,
+            'kategori_layanan_id' => $kategoriLayanan->id,
             'detail' => $request->detail,
         ]);
+
+        return redirect()->route('layanan.home')->with('success', 'Layanan berhasil diajukan.');
     }
 
     /**
@@ -92,7 +97,7 @@ class LayananController extends Controller
     public function home(): Response
     {
         $data = [
-            'requests' => Layanan::where('user_id', Auth::id())->with('user')->take(100)->get(),
+            'requests' => Layanan::where('user_id', Auth::id())->with('user')->take(100)->latest()->get(),
         ];
 
         return Inertia::render('user/home', $data);

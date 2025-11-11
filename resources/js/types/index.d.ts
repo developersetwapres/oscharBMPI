@@ -22,6 +22,23 @@ export interface NavItem {
     isActive?: boolean;
 }
 
+export interface KategoriLayanan {
+    id: number;
+    kode_kategori: string;
+    nama_kategori: string;
+    deskripsi: string;
+}
+
+export interface Layanan {
+    id: number;
+    user_id: number;
+    kategori_layanan_id: number;
+    status: string;
+    keterangan: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface SharedData {
     name: string;
     quote: { message: string; author: string };

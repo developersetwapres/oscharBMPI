@@ -13,9 +13,8 @@ class Layanan extends Model
 
     protected $fillable = [
         'user_id',
-        'tanggal',
+        'kategori_layanan_id',
         'kode_layanan',
-        'kategori',
         'detail',
         'status',
     ];

@@ -145,7 +145,14 @@ export function CategoryPage({ initialData }: any) {
                                         className="border-borderhover:bg-muted/50 border-b"
                                     >
                                         <td className="px-4 py-3 text-nowrap text-foreground">
-                                            {service.tanggal}
+                                            {new Date(
+                                                service.created_at,
+                                            ).toLocaleDateString('id-ID', {
+                                                weekday: 'long',
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                            })}
                                         </td>
                                         <td className="px-4 py-3 text-nowrap text-foreground">
                                             {service.user?.name}

@@ -13,37 +13,9 @@ import {
 import { dashboard } from '@/routes';
 import { index } from '@/routes/layanan';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { LayoutGrid, Mail, Package, Users, Wallet } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { FileText, LayoutGrid, Package, Users, Wallet } from 'lucide-react';
 import AppLogo from './app-logo';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Keuangan',
-        href: index('keuangan').url,
-        icon: Wallet,
-    },
-    {
-        title: 'Pengadaan Logistik',
-        href: index('pengadaan-logistik').url,
-        icon: Package,
-    },
-    {
-        title: 'Kepegawaian',
-        href: index('kepegawaian').url,
-        icon: Users,
-    },
-    {
-        title: 'Persuratan',
-        href: index('persuratan').url,
-        icon: Mail,
-    },
-];
 
 const footerNavItems: NavItem[] = [
     // {
@@ -59,6 +31,36 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { layananCategories } = usePage<{ layananCategories: any[] }>().props;
+
+    // 🔹 Mapping nama kategori → ikon lucide
+    const categoryIcons: Record<string, any> = {
+        Keuangan: Wallet,
+        'Pengadaan Logistik': Package,
+        Kepegawaian: Users,
+        Persuratan: FileText,
+    };
+
+    // 🔹 Item utama statis
+    const navItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+    ];
+
+    // 🔹 Gabungkan kategori dari backend
+    const layananItems: NavItem[] =
+        layananCategories?.map((kategori) => ({
+            title: kategori.nama_kategori,
+            href: index(kategori.kode_kategori),
+            icon: categoryIcons[kategori.nama_kategori] ?? LayoutGrid,
+        })) ?? [];
+
+    // 🔹 Gabungkan semuanya
+    const mainNavItems: NavItem[] = [...navItems, ...layananItems];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>

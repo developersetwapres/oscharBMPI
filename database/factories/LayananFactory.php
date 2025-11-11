@@ -19,8 +19,7 @@ class LayananFactory extends Factory
     {
         return [
             'user_id' => 2,
-            'tanggal' => $this->faker->date(),
-            'kategori' => $this->faker->randomElement(['Pengadaan Logistik', 'Persuratan', 'Kepegawaian' . 'Keuangan']),
+            'kategori_layanan_id' => 2,
             'status' => $this->faker->randomElement(['Proses', 'Selesai', 'Menunggu']),
             'detail' => $this->faker->paragraph(),
         ];
