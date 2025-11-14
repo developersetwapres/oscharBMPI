@@ -29,16 +29,6 @@ export interface KategoriLayanan {
     deskripsi: string;
 }
 
-export interface Layanan {
-    id: number;
-    user_id: number;
-    kategori_layanan_id: number;
-    status: string;
-    keterangan: string;
-    created_at: string;
-    updated_at: string;
-}
-
 export interface SharedData {
     name: string;
     quote: { message: string; author: string };
@@ -52,10 +42,25 @@ export interface User {
     name: string;
     email: string;
     jabatan: string;
+    role: string;
     avatar?: string;
     email_verified_at: string | null;
     two_factor_enabled?: boolean;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
+}
+
+export interface Layanan {
+    id: number;
+    user_id: number;
+    user: User;
+    kode_layanan: string;
+    kategori_layanan_id: number;
+    kategori: KategoriLayanan;
+    status: string;
+    detail: string;
+    keterangan: string;
+    created_at: string;
+    updated_at: string;
 }

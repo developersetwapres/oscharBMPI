@@ -45,6 +45,21 @@ export default function Register() {
                             </div>
 
                             <div className="grid gap-2">
+                                <Label htmlFor="email">Jabatan</Label>
+                                <Input
+                                    id="jabatan"
+                                    type=""
+                                    name="jabatan"
+                                    required
+                                    autoFocus
+                                    tabIndex={1}
+                                    autoComplete="jabatan"
+                                    placeholder="Kepala Subbagian"
+                                />
+                                <InputError message={errors.email} />
+                            </div>
+
+                            <div className="grid gap-2">
                                 <Label htmlFor="email">Email address</Label>
                                 <Input
                                     id="email"

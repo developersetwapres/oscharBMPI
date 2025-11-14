@@ -11,18 +11,19 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import { index } from '@/routes/layanan';
+import { index as indexlayanan } from '@/routes/layanan';
+import { index as indexUser } from '@/routes/user';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { FileText, LayoutGrid, Package, Users, Wallet } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const footerNavItems: NavItem[] = [
-    // {
-    //     title: 'Repository',
-    //     href: 'https://github.com/laravel/react-starter-kit',
-    //     icon: Folder,
-    // },
+    {
+        title: 'Manajemen User',
+        href: indexUser.url(),
+        icon: Users,
+    },
     // {
     //     title: 'Documentation',
     //     href: 'https://laravel.com/docs/starter-kits#react',
@@ -54,7 +55,7 @@ export function AppSidebar() {
     const layananItems: NavItem[] =
         layananCategories?.map((kategori) => ({
             title: kategori.nama_kategori,
-            href: index(kategori.kode_kategori),
+            href: indexlayanan(kategori.kode_kategori),
             icon: categoryIcons[kategori.nama_kategori] ?? LayoutGrid,
         })) ?? [];
 

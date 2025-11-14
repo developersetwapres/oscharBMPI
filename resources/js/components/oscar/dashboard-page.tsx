@@ -1,6 +1,8 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { KategoriLayanan } from '@/types';
+import { Layers, ShieldCheck, Users } from 'lucide-react';
 import {
     Bar,
     BarChart,
@@ -14,18 +16,25 @@ import {
     YAxis,
 } from 'recharts';
 
-export function DashboardPage() {
+export function DashboardPage({
+    JumlahProses,
+    JumlahMenunggu,
+    JumlahSelesai,
+    serviceCategoryData,
+    JumlahUser,
+    JumlahAdmin,
+}: {
+    JumlahProses: number;
+    JumlahMenunggu: number;
+    JumlahSelesai: number;
+    serviceCategoryData: KategoriLayanan[];
+    JumlahUser: number;
+    JumlahAdmin: number;
+}) {
     const statusDistribution = [
-        { name: 'Proses', value: 23, fill: '#3b82f6' },
-        { name: 'Selesai', value: 18, fill: '#06b6d4' },
-        { name: 'Menunggu', value: 12, fill: '#f59e0b' },
-    ];
-
-    const serviceCategoryData = [
-        { name: 'Keuangan', count: 19 },
-        { name: 'Pengadaan', count: 14 },
-        { name: 'Kepegawaian', count: 12 },
-        { name: 'Persuratan', count: 8 },
+        { name: 'Proses', value: JumlahProses, fill: '#3b82f6' },
+        { name: 'Selesai', value: JumlahSelesai, fill: '#06b6d4' },
+        { name: 'Menunggu', value: JumlahMenunggu, fill: '#f59e0b' },
     ];
 
     const totalServices = statusDistribution.reduce(
@@ -36,30 +45,45 @@ export function DashboardPage() {
     return (
         <div>
             <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="pb-3">
-                        <CardTitle className="text-sm">Total Layanan</CardTitle>
+                <Card className="border-l-4 border-l-cyan-500 bg-gradient-to-br from-cyan-50 to-white">
+                    <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium text-slate-600">
+                            Total Layanan
+                        </CardTitle>
+                        <Layers className="size-5 text-cyan-500" />
                     </CardHeader>
                     <CardContent>
-                        <p className="text-3xl font-bold text-primary">
+                        <div className="text-3xl font-bold text-cyan-600">
                             {totalServices}
-                        </p>
+                        </div>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="pb-3">
-                        <CardTitle className="text-sm">Jumlah User</CardTitle>
+
+                <Card className="border-l-4 border-l-purple-500 bg-gradient-to-br from-purple-50 to-white">
+                    <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium text-slate-600">
+                            Jumlah User
+                        </CardTitle>
+                        <Users className="size-5 text-purple-500" />
                     </CardHeader>
                     <CardContent>
-                        <p className="text-3xl font-bold text-accent">24</p>
+                        <div className="text-3xl font-bold text-purple-600">
+                            {JumlahUser}
+                        </div>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="pb-3">
-                        <CardTitle className="text-sm">Jumlah Admin</CardTitle>
+
+                <Card className="border-l-4 border-l-rose-500 bg-gradient-to-br from-rose-50 to-white">
+                    <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium text-slate-600">
+                            Jumlah Admin
+                        </CardTitle>
+                        <ShieldCheck className="size-5 text-rose-500" />
                     </CardHeader>
                     <CardContent>
-                        <p className="text-3xl font-bold text-yellow-600">3</p>
+                        <div className="text-3xl font-bold text-rose-600">
+                            {JumlahAdmin}
+                        </div>
                     </CardContent>
                 </Card>
             </div>
@@ -70,7 +94,7 @@ export function DashboardPage() {
                         <CardTitle>Distribusi Status</CardTitle>
                     </CardHeader>
                     <CardContent className="flex justify-center">
-                        <ResponsiveContainer width="100%" height={300}>
+                        <ResponsiveContainer width="100%" height={400}>
                             <PieChart>
                                 <Pie
                                     data={statusDistribution}
@@ -102,7 +126,7 @@ export function DashboardPage() {
                         <CardTitle>Layanan per Kategori</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <ResponsiveContainer width="100%" height={300}>
+                        <ResponsiveContainer width="100%" height={400}>
                             <BarChart data={serviceCategoryData}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis
