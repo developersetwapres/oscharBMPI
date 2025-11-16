@@ -1,9 +1,17 @@
 <?php
 
 use App\Http\Controllers\LayananController;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use Laravel\Fortify\Features;
+
+Route::get('/mail-test', function () {
+    Mail::raw('Test email OSCAR BPMI', function ($msg) {
+        $msg->to('muhammadkhaerilzaid@gmail.com')->subject('Test Email');
+    });
+
+    return 'kirim';
+});
+
 
 Route::get('/', function () {
     // return Inertia::render('welcome', [

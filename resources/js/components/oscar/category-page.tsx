@@ -167,14 +167,14 @@ export function CategoryPage({ initialData }: any) {
                                                 }
                                                 className={`cursor-pointer rounded-full border px-3 py-1 text-xs font-medium transition-colors ${getStatusStyles(service.status)}`}
                                             >
+                                                <option value="Menunggu">
+                                                    Menunggu
+                                                </option>
                                                 <option value="Proses">
                                                     Proses
                                                 </option>
                                                 <option value="Selesai">
                                                     Selesai
-                                                </option>
-                                                <option value="Menunggu">
-                                                    Menunggu
                                                 </option>
                                             </select>
                                         </td>
