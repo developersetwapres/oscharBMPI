@@ -119,6 +119,23 @@ export function CategoryPage({
     return (
         <div>
             <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+                <Card className="border-l-4 border-l-rose-500 bg-gradient-to-br from-rose-50 to-white">
+                    <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium text-slate-600">
+                            Menunggu
+                        </CardTitle>
+                        <Clock className="size-5 text-rose-500" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-3xl font-bold text-rose-600">
+                            {JumlahMenunggu}
+                        </div>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            Dari {jumlahLayanan} permintaan layanan
+                        </p>
+                    </CardContent>
+                </Card>
+
                 <Card className="border-l-4 border-l-cyan-500 bg-gradient-to-br from-cyan-50 to-white">
                     <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-slate-600">
@@ -146,23 +163,6 @@ export function CategoryPage({
                     <CardContent>
                         <div className="text-3xl font-bold text-purple-600">
                             {JumlahSelesai}
-                        </div>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                            Dari {jumlahLayanan} permintaan layanan
-                        </p>
-                    </CardContent>
-                </Card>
-
-                <Card className="border-l-4 border-l-rose-500 bg-gradient-to-br from-rose-50 to-white">
-                    <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-600">
-                            Menunggu
-                        </CardTitle>
-                        <Clock className="size-5 text-rose-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-rose-600">
-                            {JumlahMenunggu}
                         </div>
                         <p className="mt-1 text-xs text-muted-foreground">
                             Dari {jumlahLayanan} permintaan layanan
