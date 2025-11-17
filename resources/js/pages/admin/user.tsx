@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import { verify } from '@/routes/user';
+import { destroy, verify } from '@/routes/user';
 import { BreadcrumbItem, User } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { CheckCircle2, MoreVertical, Shield, XCircle } from 'lucide-react';
@@ -73,8 +73,11 @@ export default function UserManagement({
     };
 
     const handleDelete = (userId: number) => {
-        setUsers(users.filter((user) => user.id !== userId));
-        console.log(`[v0] User ${userId} deleted`);
+        router.delete(destroy.url(userId), {
+            onSuccess: () => {
+                setUsers(users.filter((user) => user.id !== userId));
+            },
+        });
     };
 
     const breadcrumbs: BreadcrumbItem[] = [
