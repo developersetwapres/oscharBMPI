@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\KategoriLayanan;
 use App\Models\Layanan;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -34,6 +35,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        Layanan::factory(47)->create();
+        KategoriLayanan::factory(4)->create();
+        // Layanan::factory(400)->create();
     }
 }

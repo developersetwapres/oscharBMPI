@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\KategoriLayanan;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,9 +19,8 @@ class LayananFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => 2,
-            'tanggal' => $this->faker->date(),
-            'kategori' => $this->faker->randomElement(['Pengadaan Logistik', 'Persuratan', 'Kepegawaian' . 'Keuangan']),
+            'user_id' => User::inRandomOrder()->value('id'),
+            'kategori_layanan_id' => KategoriLayanan::inRandomOrder()->value('id'),
             'status' => $this->faker->randomElement(['Proses', 'Selesai', 'Menunggu']),
             'detail' => $this->faker->paragraph(),
         ];

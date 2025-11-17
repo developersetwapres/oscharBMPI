@@ -13,9 +13,8 @@ class Layanan extends Model
 
     protected $fillable = [
         'user_id',
-        'tanggal',
+        'kategori_layanan_id',
         'kode_layanan',
-        'kategori',
         'detail',
         'status',
     ];
@@ -35,5 +34,10 @@ class Layanan extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function kategori()
+    {
+        return $this->belongsTo(KategoriLayanan::class);
     }
 }

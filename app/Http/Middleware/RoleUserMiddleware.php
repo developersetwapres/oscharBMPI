@@ -24,7 +24,7 @@ class RoleUserMiddleware
         // Kalau tidak cocok, lempar ke halaman sesuai role user
         return match ($user->role) {
             'administrator' => to_route('dashboard'),
-            'pegawai' => to_route('layanan.index'),
+            'pegawai' => to_route('layanan.home'),
             default => abort(403)
         };
     }

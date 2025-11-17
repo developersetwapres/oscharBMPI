@@ -4,15 +4,26 @@ import { CategoryPage } from '@/components/oscar/category-page';
 
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import { type BreadcrumbItem } from '@/types';
+import { Layanan, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
 interface initialProps {
-    services: any[];
+    layanan: Layanan[];
     judul: string;
+    jumlahLayanan: number;
+    JumlahProses: number;
+    JumlahMenunggu: number;
+    JumlahSelesai: number;
 }
 
-export default function Dashboard({ services, judul }: initialProps) {
+export default function Dashboard({
+    layanan,
+    judul,
+    jumlahLayanan,
+    JumlahProses,
+    JumlahMenunggu,
+    JumlahSelesai,
+}: initialProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: judul,
@@ -24,7 +35,13 @@ export default function Dashboard({ services, judul }: initialProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={judul} />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <CategoryPage initialData={services} />
+                <CategoryPage
+                    layanan={layanan}
+                    jumlahLayanan={jumlahLayanan}
+                    JumlahProses={JumlahProses}
+                    JumlahMenunggu={JumlahMenunggu}
+                    JumlahSelesai={JumlahSelesai}
+                />
             </div>
         </AppLayout>
     );

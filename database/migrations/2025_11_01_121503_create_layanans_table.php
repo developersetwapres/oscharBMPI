@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('layanans', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('kategori_layanan_id')->constrained()->onDelete('cascade');
             $table->string('kode_layanan')->unique();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->date('tanggal');
             $table->enum('status', ['Proses', 'Selesai', 'Menunggu'])->default('Menunggu');
-            $table->string('kategori');
             $table->text('detail');
             $table->timestamps();
         });

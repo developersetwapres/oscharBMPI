@@ -24,8 +24,8 @@ export default function Login({
 }: LoginProps) {
     return (
         <AuthLayout
-            title="Log in to your account"
-            description="Enter your email and password below to log in"
+            title="OSCAR BPMI"
+            description="SUBBAGIAN DUKUNGAN ADMINISTRASI - TAHUN 2025"
         >
             <Head title="Log in" />
 
@@ -38,7 +38,7 @@ export default function Login({
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">Username</Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -47,7 +47,7 @@ export default function Login({
                                     autoFocus
                                     tabIndex={1}
                                     autoComplete="email"
-                                    placeholder="email@example.com"
+                                    placeholder="email@set.wapresri.go.id"
                                 />
                                 <InputError message={errors.email} />
                             </div>

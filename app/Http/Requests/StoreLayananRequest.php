@@ -22,7 +22,7 @@ class StoreLayananRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tanggal' => ['required', 'date'],
+            // 'tanggal' => ['required', 'date'],
             'kategori' => ['required', 'string', 'max:100'],
             'detail' => ['required', 'string'],
         ];
@@ -31,8 +31,8 @@ class StoreLayananRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'tanggal.required' => 'Tanggal wajib diisi.',
-            'tanggal.date' => 'Tanggal harus berupa format tanggal yang valid (YYYY-MM-DD).',
+            // 'tanggal.required' => 'Tanggal wajib diisi.',
+            // 'tanggal.date' => 'Tanggal harus berupa format tanggal yang valid (YYYY-MM-DD).',
 
             'kategori.required' => 'Kategori wajib diisi.',
             'kategori.string' => 'Kategori harus berupa teks.',

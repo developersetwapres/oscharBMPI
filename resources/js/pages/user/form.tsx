@@ -3,30 +3,31 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { store } from '@/routes/layanan';
-import { SharedData } from '@/types';
+import { KategoriLayanan, SharedData } from '@/types';
 import { Link, router, usePage } from '@inertiajs/react';
 import { LogOut } from 'lucide-react';
 import type React from 'react';
-import { useState } from 'react';
 
-export default function UserPage() {
+interface initailProps {
+    kategoriLayanan: KategoriLayanan[];
+}
+
+export default function UserPage({ kategoriLayanan }: initailProps) {
     const { auth } = usePage<SharedData>().props;
-
-    const [submitted, setSubmitted] = useState(false);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const data = {
-            tanggal: formData.get('tanggal'),
             kategori: formData.get('kategori'),
             detail: formData.get('detail'),
         };
 
-        router.post(store.url(), data, {
+        console.log(data.kategori);
+
+        router.post(store.url(data.kategori), data, {
             onSuccess: () => {
                 (e.target as HTMLFormElement).reset();
-                setSubmitted(true);
             },
             onError: (errors) => {
                 console.error('Terjadi kesalahan:', errors);
@@ -118,7 +119,7 @@ export default function UserPage() {
                                     />
                                 </div>
 
-                                <div className="space-y-2">
+                                {/* <div className="space-y-2">
                                     <label className="text-sm font-medium">
                                         Tanggal
                                     </label>
@@ -128,7 +129,7 @@ export default function UserPage() {
                                         required
                                         className="w-full rounded-md border border-input bg-card px-3 py-2 text-foreground"
                                     />
-                                </div>
+                                </div> */}
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">
@@ -142,18 +143,15 @@ export default function UserPage() {
                                         <option value="">
                                             Pilih kategori...
                                         </option>
-                                        <option value="Keuangan">
-                                            Keuangan
-                                        </option>
-                                        <option value="Pengadaan Logistik">
-                                            Pengadaan Logistik
-                                        </option>
-                                        <option value="Kepegawaian">
-                                            Kepegawaian
-                                        </option>
-                                        <option value="Persuratan">
-                                            Persuratan
-                                        </option>
+
+                                        {kategoriLayanan.map((kategori) => (
+                                            <option
+                                                key={kategori.kode_kategori}
+                                                value={kategori.kode_kategori}
+                                            >
+                                                {kategori.nama_kategori}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
 
@@ -176,12 +174,6 @@ export default function UserPage() {
                                 >
                                     Kirim
                                 </Button>
-
-                                {submitted && (
-                                    <div className="rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-700">
-                                        ✓ Permintaan layanan berhasil dikirim!
-                                    </div>
-                                )}
                             </form>
                         </CardContent>
                     </Card>
