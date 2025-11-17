@@ -38,6 +38,6 @@ class Layanan extends Model
 
     public function kategori()
     {
-        return $this->belongsTo(KategoriLayanan::class);
+        return $this->belongsTo(KategoriLayanan::class, 'kategori_layanan_id');
     }
 }

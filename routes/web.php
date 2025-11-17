@@ -6,13 +6,13 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
-Route::get('/mail-test', function () {
-    Mail::raw('Test email OSCAR BPMI', function ($msg) {
-        $msg->to('muhammadkhaerilzaid@gmail.com')->subject('Test Email');
-    });
+// Route::get('/mail-test', function () {
+//     Mail::raw('Test email OSCAR BPMI', function ($msg) {
+//         $msg->to('muhammadkhaerilzaid@gmail.com')->subject('Test Email');
+//     });
 
-    return 'kirim';
-});
+//     return 'kirim';
+// });
 
 Route::get('/', function () {
     return redirect()->route('layanan.home');

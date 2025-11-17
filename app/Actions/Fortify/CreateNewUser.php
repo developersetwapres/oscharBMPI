@@ -2,7 +2,11 @@
 
 namespace App\Actions\Fortify;
 
+use App\Mail\RegistrationPendingMail;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -31,12 +35,26 @@ class CreateNewUser implements CreatesNewUsers
             'jabatan' => ['required', 'string', 'max:255'],
         ])->validate();
 
-        return User::create([
+        // Simpan user
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
-            'password' => $input['password'],
-            'jabatan' => $input['jabatan'],
+            'password' => Hash::make($input['password']),
             'role' => 'pegawai',
         ]);
+
+        // Kirim email notifikasi
+        try {
+            Mail::to($user->email)->send(
+                new RegistrationPendingMail(
+                    $user->name,
+                    $user->email,
+                )
+            );
+        } catch (\Exception $e) {
+            Log::error("Gagal kirim email registrasi: " . $e->getMessage());
+        }
+
+        return $user;
     }
 }

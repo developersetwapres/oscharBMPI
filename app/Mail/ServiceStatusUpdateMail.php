@@ -21,9 +21,8 @@ class ServiceStatusUpdateMail extends Mailable
     public string $kategori;
     public string $status;
 
-    public function __construct(string $name,  $kode, string $kategori, $status)
+    public function __construct(string $name, string  $kode, string $kategori, string $status)
     {
-        dd($name,  $kode,  $kategori,  $status);
         $this->name     = $name;
         $this->kode     = $kode;
         $this->kategori = $kategori;

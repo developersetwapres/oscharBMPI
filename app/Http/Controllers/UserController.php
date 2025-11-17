@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\RegistrationVerifiedMail;
 use App\Models\User;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends Controller
 {
     public function index(): Response
     {
-
         $data = [
             'initialUsers' => User::whereNot('role', 'administrator')->latest()->get(),
             'belumTerverifikasi' => User::whereNull('email_verified_at')
@@ -34,6 +35,17 @@ class UserController extends Controller
     {
         if (!$user->hasVerifiedEmail() && $request->verification) {
             $user->markEmailAsVerified();
+
+            try {
+                Mail::to($user->email)->send(
+                    new RegistrationVerifiedMail(
+                        $user->name,
+                        $user->email,
+                    )
+                );
+            } catch (\Exception $e) {
+                Log::error("Gagal kirim email status layanan: " . $e->getMessage());
+            }
         } elseif ($user->hasVerifiedEmail() && !$request->verification) {
             $user->email_verified_at = null;
             $user->save();

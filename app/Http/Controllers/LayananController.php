@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Log;
 use Inertia\Response;
 use App\Http\Requests\StoreLayananRequest;
 use App\Http\Requests\UpdateLayananRequest;
-
 use App\Mail\ServiceSubmittedMail;
 use App\Mail\ServiceStatusUpdateMail;
 use App\Models\KategoriLayanan;
@@ -15,7 +14,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class LayananController extends Controller
@@ -63,17 +61,16 @@ class LayananController extends Controller
             'detail' => $request->detail,
         ]);
 
-
-        // 2. Ambil user
-        $user = Auth::user();
+        // Load relasi kategori
+        $layanan->load(['kategori', 'user']);
 
         // 3. Kirim email notifikasi
         try {
-            Mail::to($user->email)->send(
+            Mail::to($layanan->user->email)->send(
                 new ServiceSubmittedMail(
-                    $user->name,
+                    $layanan->user->name,
                     $layanan->kode_layanan,
-                    $layanan->kategori
+                    $layanan->kategori->nama_kategori
                 )
             );
         } catch (\Exception $e) {
@@ -159,21 +156,21 @@ class LayananController extends Controller
         ]);
 
         // 2. Ambil user terkait layanan
-        $user = $layanan->user;
+        // Load relasi kategori
+        $layanan->load(['kategori', 'user']);
 
         // 3. Kirim email notifikasi perubahan status
         try {
-            Mail::to($user->email)->send(
+            Mail::to($layanan->user->email)->send(
                 new ServiceStatusUpdateMail(
-                    $user->name,
-                    $layanan->kode,
-                    $layanan->kategori,
-                    $request->kode_layanan // status baru
+                    $layanan->user->name,
+                    $layanan->kode_layanan,
+                    $layanan->kategori->nama_kategori,
+                    $layanan->status
                 )
             );
         } catch (\Exception $e) {
             Log::error("Gagal kirim email status layanan: " . $e->getMessage());
-            dd('oer');
         }
     }
 }
