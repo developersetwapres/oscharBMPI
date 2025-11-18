@@ -25,7 +25,7 @@ class Layanan extends Model
             do {
                 $random = strtoupper(Str::random(5)); // 5 huruf/angka acak
                 $code = 'OSH-' . $random;
-            } while (self::where('code', $code)->exists());
+            } while (self::where('kode_layanan', $code)->exists());
 
             $layanan->kode_layanan = $code;
         });
