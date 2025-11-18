@@ -34,7 +34,7 @@ export default function UserHomePage({ requests }: any) {
         if (flash.success) {
             toast({
                 title: 'Berhasil',
-                description: 'Barang telah dihapus',
+                description: flash.success,
             });
         }
     }, [flash.success]);
@@ -193,7 +193,7 @@ export default function UserHomePage({ requests }: any) {
                     </div>
 
                     {/* Stats Cards */}
-                    <div className="mb-8 grid grid-cols-3 gap-3 md:gap-4">
+                    <div className="mb-8 grid grid-cols-4 gap-2 md:gap-4">
                         <Card className="gap-0 py-0">
                             <CardContent className="p-4 text-center md:p-6">
                                 <p className="mb-1 text-xl font-bold text-primary md:text-2xl">
@@ -206,15 +206,15 @@ export default function UserHomePage({ requests }: any) {
                         </Card>
                         <Card className="gap-0 py-0">
                             <CardContent className="p-4 text-center md:p-6">
-                                <p className="mb-1 text-xl font-bold text-green-600 md:text-2xl">
+                                <p className="mb-1 text-xl font-bold text-orange-600 md:text-2xl">
                                     {
                                         requests.filter(
-                                            (r) => r.status === 'Selesai',
+                                            (r: any) => r.status == 'Menunggu',
                                         ).length
                                     }
                                 </p>
                                 <p className="text-xs text-muted-foreground md:text-sm">
-                                    Selesai
+                                    Menunggu
                                 </p>
                             </CardContent>
                         </Card>
@@ -223,7 +223,7 @@ export default function UserHomePage({ requests }: any) {
                                 <p className="mb-1 text-xl font-bold text-orange-600 md:text-2xl">
                                     {
                                         requests.filter(
-                                            (r) => r.status !== 'Selesai',
+                                            (r: any) => r.status == 'Proses',
                                         ).length
                                     }
                                 </p>
@@ -232,11 +232,25 @@ export default function UserHomePage({ requests }: any) {
                                 </p>
                             </CardContent>
                         </Card>
+                        <Card className="gap-0 py-0">
+                            <CardContent className="p-4 text-center md:p-6">
+                                <p className="mb-1 text-xl font-bold text-green-600 md:text-2xl">
+                                    {
+                                        requests.filter(
+                                            (r: any) => r.status == 'Selesai',
+                                        ).length
+                                    }
+                                </p>
+                                <p className="text-xs text-muted-foreground md:text-sm">
+                                    Selesai
+                                </p>
+                            </CardContent>
+                        </Card>
                     </div>
 
                     {/* Requests List */}
                     <div className="space-y-4 pb-8">
-                        {paginatedData.paginatedRequests.map((request) => {
+                        {paginatedData.paginatedRequests.map((request: any) => {
                             const s =
                                 statusMap[request.status] ||
                                 statusMap['Menunggu']; // fallback
@@ -251,7 +265,8 @@ export default function UserHomePage({ requests }: any) {
                                         <div className="flex items-start gap-4">
                                             <div className="flex-shrink-0 text-2xl md:text-3xl">
                                                 {categoryIcons[
-                                                    request.kategori
+                                                    request?.kategori
+                                                        ?.nama_kategori
                                                 ] || '📋'}
                                             </div>
 
@@ -259,7 +274,11 @@ export default function UserHomePage({ requests }: any) {
                                                 <div className="mb-2 flex flex-row items-start justify-between gap-2">
                                                     <div>
                                                         <h3 className="text-sm font-semibold text-foreground md:text-base">
-                                                            {request.kategori}
+                                                            {
+                                                                request
+                                                                    ?.kategori
+                                                                    ?.nama_kategori
+                                                            }
                                                         </h3>
                                                         <p className="line-clamp-2 text-xs text-muted-foreground md:text-sm">
                                                             {request.detail}
