@@ -1,5 +1,6 @@
 'use client';
 
+import { Footer } from '@/components/oscar/footer';
 import { Pagination } from '@/components/oscar/pagination';
 import {
     AlertDialog,
@@ -137,7 +138,7 @@ export default function UserHomePage({ requests }: any) {
                     </div>
                 </div>
 
-                <div className="spacae-y-8 mx-auto max-w-3xl px-4 py-8 md:py-12">
+                <div className="spacae-y-8 md:py-12X mx-auto max-w-3xl px-4 py-8">
                     <div className="mb-12 text-center md:mb-16">
                         <div className="mb-6 flex justify-center">
                             <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 shadow-lg md:h-20 md:w-20">
@@ -305,6 +306,7 @@ export default function UserHomePage({ requests }: any) {
                     )}
                 </div>
             </div>
+            <Footer />
 
             <Toaster />
         </>

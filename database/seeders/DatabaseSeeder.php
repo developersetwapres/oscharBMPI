@@ -36,6 +36,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         KategoriLayanan::factory(4)->create();
-        Layanan::factory(400)->create();
+        Layanan::factory(700)->create();
     }
 }
