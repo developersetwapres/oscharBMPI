@@ -30,7 +30,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 {item.icon && <item.icon />}
                                 <span>{item.title}</span>
 
-                                {item.count && (
+                                {item.count > 0 && (
                                     <Badge
                                         variant="destructive"
                                         className="ml-auto flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
