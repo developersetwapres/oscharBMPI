@@ -23,6 +23,7 @@ const footerNavItems: NavItem[] = [
         title: 'Manajemen User',
         href: indexUser.url(),
         icon: Users,
+        count: 0,
     },
     // {
     //     title: 'Documentation',
@@ -57,6 +58,7 @@ export function AppSidebar() {
             title: kategori.nama_kategori,
             href: indexlayanan(kategori.kode_kategori),
             icon: categoryIcons[kategori.nama_kategori] ?? LayoutGrid,
+            count: kategori.jumlah,
         })) ?? [];
 
     // 🔹 Gabungkan semuanya

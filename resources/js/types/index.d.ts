@@ -20,6 +20,7 @@ export interface NavItem {
     href: NonNullable<InertiaLinkProps['href']>;
     icon?: LucideIcon | null;
     isActive?: boolean;
+    count?: number;
 }
 
 export interface KategoriLayanan {
@@ -37,6 +38,7 @@ export interface SharedData {
     [key: string]: unknown;
     flash: {
         success: string;
+        JumlahMenunggu: number;
     };
 }
 

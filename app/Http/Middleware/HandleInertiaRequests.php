@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\KategoriLayanan;
+use App\Models\Layanan;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -47,12 +48,27 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            // 'layananCategories' => function () {
+            //     return KategoriLayanan::select(['nama_kategori', 'kode_kategori'])->get();
+            // },
+
+            // Ambil kategori + hitung layanannya per kategori
             'layananCategories' => function () {
-                return KategoriLayanan::select(['nama_kategori', 'kode_kategori'])->get();
+                return KategoriLayanan::withCount([
+                    'layanans as jumlah' => function ($q) {
+                        $q->where('status', 'Menunggu');
+                    }
+                ])
+                    ->get()
+                    ->map(fn($kategori) => [
+                        'nama_kategori' => $kategori->nama_kategori,
+                        'kode_kategori' => $kategori->kode_kategori,
+                        'jumlah' => $kategori->jumlah,
+                    ]);
             },
 
             'flash' => [
-                'success' => fn() => $request->session()->get('success')
+                'success' => fn() => $request->session()->get('success'),
             ],
         ];
     }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Footer } from '@/components/oscar/footer';
+import { FooterUser } from '@/components/oscar/footer-user';
 import { Pagination } from '@/components/oscar/pagination';
 import {
     AlertDialog,
@@ -325,7 +325,7 @@ export default function UserHomePage({ requests }: any) {
                     )}
                 </div>
             </div>
-            <Footer />
+            <FooterUser />
 
             <Toaster />
         </>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Footer } from '@/components/oscar/footer';
+import { FooterUser } from '@/components/oscar/footer-user';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { store } from '@/routes/layanan';
@@ -186,7 +186,7 @@ export default function UserPage({ kategoriLayanan }: initailProps) {
                     </div>
                 </div>
             </div>
-            <Footer />
+            <FooterUser />
         </>
     );
 }
