@@ -24,8 +24,6 @@ export default function UserPage({ kategoriLayanan }: initailProps) {
             detail: formData.get('detail'),
         };
 
-        console.log(data.kategori);
-
         router.post(store.url(data.kategori), data, {
             onSuccess: () => {
                 (e.target as HTMLFormElement).reset();

@@ -35,6 +35,9 @@ export interface SharedData {
     auth: Auth;
     sidebarOpen: boolean;
     [key: string]: unknown;
+    flash: {
+        success: string;
+    };
 }
 
 export interface User {

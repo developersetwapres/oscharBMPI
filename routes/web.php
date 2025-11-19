@@ -33,6 +33,7 @@ Route::middleware(['auth', 'verified', 'role:administrator'])->group(function ()
 
     Route::get('/dashboard/user', [UserController::class, 'index'])->name('user.index');
     Route::put('/dashboard/user/{user}', [UserController::class, 'verify'])->name('user.verify');
+    Route::delete('/dashboard/user/delete/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
     Route::get('/dashboard/layanan/{kategoriLayanan:kode_kategori}', [LayananController::class, 'index'])->name('layanan.index');
     Route::put('/dashboard/layanan/{layanan:kode_layanan}', [LayananController::class, 'status'])->name('layanan.status');

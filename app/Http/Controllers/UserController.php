@@ -51,4 +51,9 @@ class UserController extends Controller
             $user->save();
         }
     }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+    }
 }
