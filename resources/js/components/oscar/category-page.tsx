@@ -16,7 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { destroy, show, status } from '@/routes/layanan';
 import { Layanan, SharedData } from '@/types';
 import { Link, router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, Eye, Users } from 'lucide-react';
+import { Calendar, Clock, Eye, Trash2, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface initialProps {
@@ -225,13 +225,11 @@ export function CategoryPage({
                                             <th className="px-4 py-3 text-left font-semibold text-foreground">
                                                 Jabatan
                                             </th>
+
                                             {/* <th className="px-4 py-3 text-left font-semibold text-foreground">
-                                                Detail
-                                            </th> */}
-                                            <th className="px-4 py-3 text-left font-semibold text-foreground">
                                                 Status
-                                            </th>
-                                            <th className="px-4 py-3 text-left font-semibold text-foreground">
+                                            </th> */}
+                                            <th className="px-4 py-3 text-center font-semibold text-foreground">
                                                 Aksi
                                             </th>
                                         </tr>
@@ -264,10 +262,8 @@ export function CategoryPage({
                                                 <td className="px-4 py-3 text-nowrap text-foreground">
                                                     {service.user?.jabatan}
                                                 </td>
-                                                {/* <td className="max-w-xs truncate px-4 py-3 text-foreground">
-                                                    {service.detail}
-                                                </td> */}
-                                                <td className="px-4 py-3">
+
+                                                {/* <td className="px-4 py-3">
                                                     <select
                                                         value={service.status}
                                                         onChange={(e) =>
@@ -288,31 +284,35 @@ export function CategoryPage({
                                                             Menunggu
                                                         </option>
                                                     </select>
-                                                </td>
-                                                {/* <td className="px-4 py-3">
-                                                    <button
-                                                        onClick={() =>
-                                                            setDeleteConfirm(
-                                                                service.kode_layanan,
-                                                            )
-                                                        }
-                                                        className="flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-800"
-                                                    >
-                                                        <Trash2 className="h-3 w-3" />
-                                                        Hapus
-                                                    </button>
                                                 </td> */}
+                                                <td className="px-4 py-3 text-center">
+                                                    <div className="inline-flex items-center justify-center gap-3">
+                                                        <Link
+                                                            href={show.url(
+                                                                service.kode_layanan,
+                                                            )}
+                                                            className="inline-flex items-center gap-1 text-xs font-medium text-green-600 hover:text-green-700"
+                                                        >
+                                                            <Eye className="h-3 w-3" />
+                                                            Lihat Detail
+                                                        </Link>
 
-                                                <td className="px-5 py-4">
-                                                    <Link
-                                                        href={show.url(
-                                                            service.kode_layanan,
-                                                        )}
-                                                        className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80"
-                                                    >
-                                                        <Eye className="h-3 w-3" />
-                                                        Lihat Detail
-                                                    </Link>
+                                                        <span className="mx-3">
+                                                            ||
+                                                        </span>
+
+                                                        <button
+                                                            onClick={() =>
+                                                                setDeleteConfirm(
+                                                                    service.kode_layanan,
+                                                                )
+                                                            }
+                                                            className="inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-800"
+                                                        >
+                                                            <Trash2 className="h-3 w-3" />
+                                                            Hapus
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}

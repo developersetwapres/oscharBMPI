@@ -2,83 +2,96 @@
 
 import type React from 'react';
 
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import { result } from '@/routes/layanan';
+import { destroy, result, status } from '@/routes/layanan';
 import { BreadcrumbItem, Layanan, SharedData } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { ArrowLeft, FileText, Save, Trash2, Upload, X } from 'lucide-react';
+import { ArrowLeft, FileText, Save, Upload, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-interface inialData {
-    service: Layanan;
-}
+type Props = { service: Layanan };
 
-export default function DetailLayananPage({ service }: inialData) {
+export default function DetailLayananPage({ service }: Props) {
     const { flash } = usePage<SharedData>().props;
     const { toast } = useToast();
 
-    const [status, setStatus] = useState(service.status);
+    // const [status, setStatus] = useState(service.status);
     const [isSaving, setIsSaving] = useState(false);
-    const [resultPreviewUrl, setResultPreviewUrl] = useState<string | null>(
-        null,
-    );
+
     const [fileResultService, setFileResultService] = useState<File | null>(
         null,
     );
 
+    const serverFileUrl = service.result_document
+        ? `/storage/${service.result_document}`
+        : null;
+
+    const [previewUrl, setPreviewUrl] = useState<string | null>(serverFileUrl);
+
     const [showUserDocPreview, setShowUserDocPreview] = useState(false);
 
-    const handleStatusChange = (newStatus: string) => {
-        setStatus(newStatus);
+    const handleStatusChange = (kodeLayanan: string, newStatus: string) => {
+        router.put(
+            status.url(kodeLayanan),
+            { status: newStatus },
+            {
+                onSuccess: () => {
+                    //
+                },
+                onError: (errors) => {
+                    console.error('Error updating status:', errors);
+                },
+            },
+        );
     };
 
     const handleSave = () => {
-        setIsSaving(true);
+        if (!fileResultService) return;
 
+        setIsSaving(true);
         router.post(
             result.url(service.kode_layanan),
             {
                 fileResultService,
             },
             {
-                preserveScroll: true,
+                forceFormData: true,
                 onSuccess: () => {
+                    setIsSaving(false);
+                },
+                onError: () => {
                     setIsSaving(false);
                 },
             },
         );
     };
 
-    const handleDelete = () => {
-        // console.log('[DELETE] Service deleted:', id);
-        // router.back();
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || !e.target.files[0]) return;
+        const file = e.target.files[0];
+
+        if (file.type !== 'application/pdf') return;
+
+        const url = URL.createObjectURL(file);
+        setPreviewUrl(url);
+        setFileResultService(file);
     };
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
+    const handleRemoveUpload = () => {
+        setPreviewUrl(serverFileUrl);
+        setFileResultService(null);
+    };
 
-            if (file.type === 'application/pdf') {
-                console.log('[UPLOAD] Admin uploaded file:', file.name);
-                const url = URL.createObjectURL(file);
-                setResultPreviewUrl(url);
-                setFileResultService(file);
-            }
-        }
+    const handleDelete = (kodeLayanan: string) => {
+        router.delete(destroy.url(kodeLayanan), {
+            onError: (errors) => {
+                console.error('Error updating status:', errors);
+            },
+        });
     };
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -90,20 +103,39 @@ export default function DetailLayananPage({ service }: inialData) {
 
     useEffect(() => {
         if (flash.success) {
-            toast({
-                title: 'Berhasil',
-                description: flash.success,
-            });
+            toast({ title: 'Berhasil', description: flash.success });
         }
     }, [flash.success]);
 
     useEffect(() => {
         return () => {
-            if (resultPreviewUrl) {
-                URL.revokeObjectURL(resultPreviewUrl);
+            if (previewUrl && previewUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(previewUrl);
             }
         };
-    }, [resultPreviewUrl]);
+    }, [previewUrl]);
+
+    useEffect(() => {
+        if (flash.success) {
+            setFileResultService(null); // reset state upload
+            setPreviewUrl(serverFileUrl); // kembalikan ke file dari server
+        }
+    }, [flash.success]);
+
+    const disableSave = isSaving || !fileResultService;
+
+    const getStatusStyles = (status: string) => {
+        switch (status) {
+            case 'Proses':
+                return 'bg-blue-100 text-blue-800 border-blue-300';
+            case 'Selesai':
+                return 'bg-green-100 text-green-800 border-green-300';
+            case 'Menunggu':
+                return 'bg-purple-100 text-purple-800 border-purple-300';
+            default:
+                return 'bg-gray-100 text-gray-800 border-gray-300';
+        }
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -112,9 +144,9 @@ export default function DetailLayananPage({ service }: inialData) {
                 <div className="max-w-7xl flex-1 overflow-auto">
                     <div className="mb-6 flex items-center gap-4">
                         <Button
+                            onClick={() => window.history.back()}
                             variant="ghost"
                             size="icon"
-                            // onClick={() => router.back()}
                         >
                             <ArrowLeft className="h-5 w-5" />
                         </Button>
@@ -129,7 +161,6 @@ export default function DetailLayananPage({ service }: inialData) {
                     </div>
 
                     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                        {/* Main Content - 2 Columns */}
                         <div className="space-y-6 lg:col-span-2">
                             <Card>
                                 <CardHeader>
@@ -209,9 +240,6 @@ export default function DetailLayananPage({ service }: inialData) {
                                                             service.supporting_documents
                                                         }
                                                     </p>
-                                                    <p className="text-xs text-muted-foreground">
-                                                        PDF Document • 2.4 MB
-                                                    </p>
                                                 </div>
                                                 <Button
                                                     variant="ghost"
@@ -229,14 +257,12 @@ export default function DetailLayananPage({ service }: inialData) {
                                                 </Button>
                                             </div>
                                             {showUserDocPreview && (
-                                                <div className="aspect-[16/9] w-full overflow-hidden rounded-md border bg-muted">
-                                                    {/* In a real app, this would be the actual URL of the user's document */}
-                                                    <div className="flex h-full w-full items-center justify-center bg-muted/50 text-muted-foreground">
-                                                        <p>
-                                                            Preview Dokumen User
-                                                            (Mock)
-                                                        </p>
-                                                    </div>
+                                                <div className="flex aspect-[16/9] w-full items-center justify-center overflow-hidden rounded-md border bg-muted">
+                                                    <iframe
+                                                        src={`/storage/${service.supporting_documents}`}
+                                                        className="h-full w-full"
+                                                        title="Result Preview"
+                                                    />
                                                 </div>
                                             )}
                                         </div>
@@ -245,9 +271,8 @@ export default function DetailLayananPage({ service }: inialData) {
                             </Card>
                         </div>
 
-                        {/* Sidebar Actions - 1 Column */}
                         <div className="space-y-6">
-                            <Card>
+                            <Card className="min-h-full">
                                 <CardHeader>
                                     <CardTitle>Tindak Lanjut</CardTitle>
                                 </CardHeader>
@@ -256,14 +281,16 @@ export default function DetailLayananPage({ service }: inialData) {
                                         <label className="text-sm font-medium">
                                             Status Layanan
                                         </label>
+
                                         <select
-                                            value={status}
+                                            value={service.status}
                                             onChange={(e) =>
                                                 handleStatusChange(
+                                                    service.kode_layanan,
                                                     e.target.value,
                                                 )
                                             }
-                                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground"
+                                            className={`w-full cursor-pointer rounded-md border border-input px-3 py-1.5 font-medium text-foreground transition-colors ${getStatusStyles(service.status)}`}
                                         >
                                             <option value="Proses">
                                                 Proses
@@ -281,8 +308,9 @@ export default function DetailLayananPage({ service }: inialData) {
                                         <label className="text-sm font-medium">
                                             Upload Dokumen Hasil
                                         </label>
-                                        {!resultPreviewUrl ? (
-                                            <div className="relative flex cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-input p-4 text-center transition-colors hover:bg-muted/50">
+
+                                        {!previewUrl || previewUrl === '' ? (
+                                            <div className="relative flex cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-input p-4 text-center hover:bg-muted/50">
                                                 <input
                                                     type="file"
                                                     accept=".pdf"
@@ -300,25 +328,26 @@ export default function DetailLayananPage({ service }: inialData) {
                                                     <div className="flex items-center gap-2">
                                                         <FileText className="h-4 w-4 text-red-600" />
                                                         <span className="text-xs font-medium">
-                                                            Dokumen Hasil.pdf
+                                                            Dokumen Hasil
                                                         </span>
                                                     </div>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="h-6 w-6"
-                                                        onClick={() =>
-                                                            setResultPreviewUrl(
-                                                                null,
-                                                            )
-                                                        }
-                                                    >
-                                                        <X className="h-3 w-3" />
-                                                    </Button>
+                                                    {fileResultService && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="h-6 w-6"
+                                                            onClick={
+                                                                handleRemoveUpload
+                                                            }
+                                                        >
+                                                            <X className="h-3 w-3" />
+                                                        </Button>
+                                                    )}
                                                 </div>
+
                                                 <div className="aspect-video w-full overflow-hidden rounded-md border bg-muted">
                                                     <iframe
-                                                        src={resultPreviewUrl}
+                                                        src={previewUrl}
                                                         className="h-full w-full"
                                                         title="Result Preview"
                                                     />
@@ -330,13 +359,13 @@ export default function DetailLayananPage({ service }: inialData) {
                                     <Button
                                         className="w-full"
                                         onClick={handleSave}
-                                        disabled={isSaving}
+                                        disabled={disableSave}
                                     >
                                         {isSaving ? (
                                             'Menyimpan...'
                                         ) : (
                                             <>
-                                                <Save className="mr-2 h-4 w-4" />
+                                                <Save className="mr-2 h-4 w-4" />{' '}
                                                 Simpan Perubahan
                                             </>
                                         )}
@@ -344,7 +373,7 @@ export default function DetailLayananPage({ service }: inialData) {
                                 </CardContent>
                             </Card>
 
-                            <Card className="border-red-200 bg-red-50/30">
+                            {/* <Card className="border-red-200 bg-red-50/30">
                                 <CardContent className="pt-6">
                                     <AlertDialog>
                                         <AlertDialogTrigger asChild>
@@ -352,7 +381,7 @@ export default function DetailLayananPage({ service }: inialData) {
                                                 variant="destructive"
                                                 className="w-full"
                                             >
-                                                <Trash2 className="mr-2 h-4 w-4" />
+                                                <Trash2 className="mr-2 h-4 w-4" />{' '}
                                                 Hapus Layanan
                                             </Button>
                                         </AlertDialogTrigger>
@@ -364,9 +393,6 @@ export default function DetailLayananPage({ service }: inialData) {
                                                 <AlertDialogDescription>
                                                     Apakah Anda yakin ingin
                                                     menghapus layanan ini?
-                                                    Tindakan ini tidak dapat
-                                                    dibatalkan dan semua data
-                                                    terkait akan hilang.
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <div className="mt-4 flex justify-end gap-3">
@@ -374,7 +400,11 @@ export default function DetailLayananPage({ service }: inialData) {
                                                     Batal
                                                 </AlertDialogCancel>
                                                 <AlertDialogAction
-                                                    onClick={handleDelete}
+                                                    onClick={() =>
+                                                        handleDelete(
+                                                            service.kode_layanan,
+                                                        )
+                                                    }
                                                     className="bg-red-600 hover:bg-red-700"
                                                 >
                                                     Ya, Hapus
@@ -383,7 +413,7 @@ export default function DetailLayananPage({ service }: inialData) {
                                         </AlertDialogContent>
                                     </AlertDialog>
                                 </CardContent>
-                            </Card>
+                            </Card> */}
                         </div>
                     </div>
                 </div>
