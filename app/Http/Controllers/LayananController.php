@@ -70,18 +70,18 @@ class LayananController extends Controller
         $layanan->load(['kategori', 'user']);
 
         // 3. Kirim email notifikasi
-        // try {
-        //     Mail::to($layanan->user->email)->send(
-        //         new ServiceSubmittedMail(
-        //             $layanan->user->name,
-        //             $layanan->kode_layanan,
-        //             $layanan->kategori->nama_kategori
-        //         )
-        //     );
-        // } catch (\Exception $e) {
-        //     // opsional: log error
-        //     Log::error("Gagal mengirim email: " . $e->getMessage());
-        // }
+        try {
+            Mail::to($layanan->user->email)->send(
+                new ServiceSubmittedMail(
+                    $layanan->user->name,
+                    $layanan->kode_layanan,
+                    $layanan->kategori->nama_kategori
+                )
+            );
+        } catch (\Exception $e) {
+            // opsional: log error
+            Log::error("Gagal mengirim email: " . $e->getMessage());
+        }
 
         return redirect()->route('layanan.home')->with('success', 'Layanan berhasil diajukan.');
     }
@@ -201,18 +201,18 @@ class LayananController extends Controller
         ]);
 
         // 3. Kirim email notifikasi perubahan status
-        // try {
-        //     Mail::to($layanan->user->email)->send(
-        //         new ServiceStatusUpdateMail(
-        //             $layanan->user->name,
-        //             $layanan->kode_layanan,
-        //             $layanan->kategori->nama_kategori,
-        //             $layanan->status
-        //         )
-        //     );
-        // } catch (\Exception $e) {
-        //     Log::error("Gagal kirim email status layanan: " . $e->getMessage());
-        // }
+        try {
+            Mail::to($layanan->user->email)->send(
+                new ServiceStatusUpdateMail(
+                    $layanan->user->name,
+                    $layanan->kode_layanan,
+                    $layanan->kategori->nama_kategori,
+                    $layanan->status
+                )
+            );
+        } catch (\Exception $e) {
+            Log::error("Gagal kirim email status layanan: " . $e->getMessage());
+        }
 
         return back()->with('success', "File Document Hasil berhasil diunggah.");
     }

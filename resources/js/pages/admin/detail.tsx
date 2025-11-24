@@ -225,48 +225,50 @@ export default function DetailLayananPage({ service }: Props) {
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <label className="mb-2 block text-sm font-medium text-muted-foreground">
-                                            Dokumen Pendukung (User)
-                                        </label>
-                                        <div className="space-y-4">
-                                            <div className="group flex cursor-pointer items-center gap-3 rounded-md border border-border bg-card p-3 transition-colors hover:bg-muted/50">
-                                                <div className="rounded bg-red-100 p-2 text-red-600">
-                                                    <FileText className="h-5 w-5" />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-medium transition-colors group-hover:text-primary">
-                                                        {
-                                                            service.supporting_documents
+                                    {service.supporting_documents && (
+                                        <div>
+                                            <label className="mb-2 block text-sm font-medium text-muted-foreground">
+                                                Dokumen Pendukung (User)
+                                            </label>
+                                            <div className="space-y-4">
+                                                <div className="group flex cursor-pointer items-center gap-3 rounded-md border border-border bg-card p-3 transition-colors hover:bg-muted/50">
+                                                    <div className="rounded bg-red-100 p-2 text-red-600">
+                                                        <FileText className="h-5 w-5" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="text-sm font-medium transition-colors group-hover:text-primary">
+                                                            {
+                                                                service.supporting_documents
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-primary"
+                                                        onClick={() =>
+                                                            setShowUserDocPreview(
+                                                                !showUserDocPreview,
+                                                            )
                                                         }
-                                                    </p>
+                                                    >
+                                                        {showUserDocPreview
+                                                            ? 'Tutup Preview'
+                                                            : 'Lihat Preview'}
+                                                    </Button>
                                                 </div>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="text-primary"
-                                                    onClick={() =>
-                                                        setShowUserDocPreview(
-                                                            !showUserDocPreview,
-                                                        )
-                                                    }
-                                                >
-                                                    {showUserDocPreview
-                                                        ? 'Tutup Preview'
-                                                        : 'Lihat Preview'}
-                                                </Button>
+                                                {showUserDocPreview && (
+                                                    <div className="flex aspect-[16/9] w-full items-center justify-center overflow-hidden rounded-md border bg-muted">
+                                                        <iframe
+                                                            src={`/storage/${service.supporting_documents}`}
+                                                            className="h-full w-full"
+                                                            title="Result Preview"
+                                                        />
+                                                    </div>
+                                                )}
                                             </div>
-                                            {showUserDocPreview && (
-                                                <div className="flex aspect-[16/9] w-full items-center justify-center overflow-hidden rounded-md border bg-muted">
-                                                    <iframe
-                                                        src={`/storage/${service.supporting_documents}`}
-                                                        className="h-full w-full"
-                                                        title="Result Preview"
-                                                    />
-                                                </div>
-                                            )}
                                         </div>
-                                    </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         </div>
