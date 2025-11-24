@@ -226,9 +226,9 @@ export function CategoryPage({
                                                 Jabatan
                                             </th>
 
-                                            {/* <th className="px-4 py-3 text-left font-semibold text-foreground">
+                                            <th className="px-4 py-3 text-left font-semibold text-foreground">
                                                 Status
-                                            </th> */}
+                                            </th>
                                             <th className="px-4 py-3 text-center font-semibold text-foreground">
                                                 Aksi
                                             </th>
@@ -263,28 +263,13 @@ export function CategoryPage({
                                                     {service.user?.jabatan}
                                                 </td>
 
-                                                {/* <td className="px-4 py-3">
-                                                    <select
-                                                        value={service.status}
-                                                        onChange={(e) =>
-                                                            handleStatusChange(
-                                                                service.kode_layanan,
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                        className={`cursor-pointer rounded-full border px-3 py-1 text-xs font-medium transition-colors ${getStatusStyles(service.status)}`}
+                                                <td className="px-4 py-3">
+                                                    <span
+                                                        className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${getStatusStyles(service.status)}`}
                                                     >
-                                                        <option value="Proses">
-                                                            Proses
-                                                        </option>
-                                                        <option value="Selesai">
-                                                            Selesai
-                                                        </option>
-                                                        <option value="Menunggu">
-                                                            Menunggu
-                                                        </option>
-                                                    </select>
-                                                </td> */}
+                                                        {service.status}
+                                                    </span>
+                                                </td>
                                                 <td className="px-4 py-3 text-center">
                                                     <div className="inline-flex items-center justify-center gap-3">
                                                         <Link
