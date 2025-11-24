@@ -117,8 +117,20 @@ class LayananController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+
     public function destroy(Layanan $layanan)
     {
+        // Hapus file supporting document jika ada
+        if ($layanan->supporting_documents && Storage::disk('public')->exists($layanan->supporting_documents)) {
+            Storage::disk('public')->delete($layanan->supporting_documents);
+        }
+
+        // Hapus file result document jika ada
+        if ($layanan->result_document && Storage::disk('public')->exists($layanan->result_document)) {
+            Storage::disk('public')->delete($layanan->result_document);
+        }
+
+        // Hapus data layanan
         $layanan->delete();
 
         return back()->with('success', "Layanan No. {$layanan->kode_layanan} an. {$layanan->user->name} telah dihapus.");
