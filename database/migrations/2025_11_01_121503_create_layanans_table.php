@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('status', ['Proses', 'Selesai', 'Menunggu'])->default('Menunggu');
             $table->text('detail');
+            $table->string('result_document')->nullable();
+            $table->string('supporting_documents')->nullable();
             $table->timestamps();
         });
     }

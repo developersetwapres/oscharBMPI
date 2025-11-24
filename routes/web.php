@@ -4,6 +4,8 @@ use App\Http\Controllers\LayananController;
 
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Layanan;
 use App\Http\Controllers\UserController;
 
 // Route::get('/mail-test', function () {
@@ -26,6 +28,16 @@ Route::middleware(['auth',  'role:pegawai'])->group(function () {
 Route::middleware(['auth', 'verified', 'role:pegawai'])->group(function () {
     Route::get('/layanan', [LayananController::class, 'create'])->name('layanan.create');
     Route::post('layanan/store/{kategoriLayanan:kode_kategori}', [LayananController::class, 'store'])->name('layanan.store');
+
+
+    Route::get('/layanan-download/result/{layanan:kode_layanan}', function (Layanan $layanan) {
+        $relativePath = $layanan->result_document;
+        $fullPath = storage_path('app/public/' . $relativePath);
+        if (!file_exists($fullPath)) {
+            abort(404, 'File tidak ditemukan');
+        }
+        return response()->download($fullPath);
+    })->name('layanan.downloadResult');
 });
 
 Route::middleware(['auth', 'verified', 'role:administrator'])->group(function () {
@@ -36,6 +48,8 @@ Route::middleware(['auth', 'verified', 'role:administrator'])->group(function ()
     Route::delete('/dashboard/user/delete/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
     Route::get('/dashboard/layanan/{kategoriLayanan:kode_kategori}', [LayananController::class, 'index'])->name('layanan.index');
+    Route::get('/dashboard/layanan-detail/{layanan:kode_layanan}', [LayananController::class, 'show'])->name('layanan.show');
+    Route::post('/dashboard/layanan-detail/result-document/{layanan:kode_layanan}', [LayananController::class, 'resultDocument'])->name('layanan.result');
     Route::put('/dashboard/layanan/{layanan:kode_layanan}', [LayananController::class, 'status'])->name('layanan.status');
     Route::delete('/dashboard/layanan/{layanan:kode_layanan}', [LayananController::class, 'destroy'])->name('layanan.destroy');
 });

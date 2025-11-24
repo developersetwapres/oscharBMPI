@@ -14,6 +14,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class LayananController extends Controller
@@ -34,7 +36,7 @@ class LayananController extends Controller
             'JumlahSelesai' => Layanan::where('kategori_layanan_id', $kategoriLayanan->id)->where('status', 'Selesai')->count(),
         ];
 
-        return Inertia::render('admin/layanan/page', $data);
+        return Inertia::render('admin/layanan', $data);
     }
 
     /**
@@ -54,11 +56,14 @@ class LayananController extends Controller
      */
     public function store(StoreLayananRequest $request, KategoriLayanan $kategoriLayanan)
     {
+        $path = $request->file('supportingDocuments')->store('document/support', 'public');
+
         // 1. Simpan layanan
         $layanan = Layanan::create([
             'user_id' => Auth::id(),
             'kategori_layanan_id' => $kategoriLayanan->id,
             'detail' => $request->detail,
+            'supporting_documents' => $request->$path,
         ]);
 
         // Load relasi kategori
@@ -86,7 +91,11 @@ class LayananController extends Controller
      */
     public function show(Layanan $layanan)
     {
-        //
+        $data = [
+            'service' =>  $layanan->load(['user', 'kategori'])
+        ];
+
+        return Inertia::render('admin/detail', $data);
     }
 
     /**
@@ -111,6 +120,8 @@ class LayananController extends Controller
     public function destroy(Layanan $layanan)
     {
         $layanan->delete();
+
+        return back()->with('success', "Layanan No. {$layanan->kode_layanan} an. {$layanan->user->name} telah dihapus.");
     }
 
     public function dashboard(): Response
@@ -172,5 +183,22 @@ class LayananController extends Controller
         } catch (\Exception $e) {
             Log::error("Gagal kirim email status layanan: " . $e->getMessage());
         }
+    }
+
+
+    public function resultDocument(Request $request, Layanan $layanan)
+    {
+
+        $request->validate([
+            'fileResultService' => 'required|file|mimes:pdf|max:5120',
+        ]);
+
+        $path = $request->file('fileResultService')->store('document/result', 'public');
+
+        $layanan->update([
+            'result_document' => $path
+        ]);
+
+        return back()->with('success', "File Document Hasil berhasil diunggah.");
     }
 }

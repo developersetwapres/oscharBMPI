@@ -17,6 +17,8 @@ class Layanan extends Model
         'kode_layanan',
         'detail',
         'status',
+        'result_document',
+        'supporting_documents',
     ];
 
     protected static function booted()
@@ -24,7 +26,7 @@ class Layanan extends Model
         static::creating(function ($layanan) {
             do {
                 $random = strtoupper(Str::random(5)); // 5 huruf/angka acak
-                $code = 'OSH-' . $random;
+                $code = 'OSC-' . $random;
             } while (self::where('kode_layanan', $code)->exists());
 
             $layanan->kode_layanan = $code;

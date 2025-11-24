@@ -6,8 +6,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { store } from '@/routes/layanan';
 import { KategoriLayanan, SharedData } from '@/types';
 import { Link, router, usePage } from '@inertiajs/react';
-import { LogOut } from 'lucide-react';
+import { FileText, LogOut, Upload, X } from 'lucide-react';
 import type React from 'react';
+import { useState } from 'react';
 
 interface initailProps {
     kategoriLayanan: KategoriLayanan[];
@@ -16,12 +17,36 @@ interface initailProps {
 export default function UserPage({ kategoriLayanan }: initailProps) {
     const { auth } = usePage<SharedData>().props;
 
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [fileName, setFileName] = useState<string | null>(null);
+    const [fileUpload, setFileUpload] = useState(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            if (file.type === 'application/pdf') {
+                setFileName(file.name);
+                setFileUpload(file);
+                const url = URL.createObjectURL(file);
+                setPreviewUrl(url);
+            } else {
+                alert('Mohon upload file PDF');
+            }
+        }
+    };
+
+    const clearFile = () => {
+        setPreviewUrl(null);
+        setFileName(null);
+    };
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const data = {
             kategori: formData.get('kategori'),
             detail: formData.get('detail'),
+            supportingDocuments: fileUpload,
         };
 
         router.post(store.url(data.kategori), data, {
@@ -36,7 +61,6 @@ export default function UserPage({ kategoriLayanan }: initailProps) {
 
     return (
         <>
-            {' '}
             <div className="min-h-screen bg-gradient-to-tr from-white via-background to-blue-100">
                 <div className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-md">
                     <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
@@ -172,6 +196,63 @@ export default function UserPage({ kategoriLayanan }: initailProps) {
                                             className="w-full resize-none rounded-md border border-input bg-card px-3 py-2 text-foreground"
                                             placeholder="Jelaskan detail permintaan layanan Anda..."
                                         />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">
+                                            Dokumen Pendukung (PDF)
+                                        </label>
+                                        {!previewUrl ? (
+                                            <div className="relative flex cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-input p-6 text-center transition-colors hover:bg-muted/50">
+                                                <input
+                                                    type="file"
+                                                    name="dokumen"
+                                                    accept=".pdf"
+                                                    onChange={handleFileChange}
+                                                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                                />
+                                                <Upload className="mb-2 h-8 w-8 text-muted-foreground" />
+                                                <p className="text-sm font-medium text-foreground">
+                                                    Klik untuk upload dokumen
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    Format PDF, maks 5MB
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-4">
+                                                <div className="flex items-center justify-between rounded-md border bg-muted/20 p-3">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="rounded bg-red-100 p-2 text-red-600">
+                                                            <FileText className="h-5 w-5" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm font-medium">
+                                                                {fileName}
+                                                            </p>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                Siap diupload
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={clearFile}
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                                <div className="aspect-[16/9] w-full overflow-hidden rounded-md border bg-muted">
+                                                    <iframe
+                                                        src={previewUrl}
+                                                        className="h-full w-full"
+                                                        title="PDF Preview"
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <Button

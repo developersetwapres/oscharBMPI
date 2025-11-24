@@ -18,10 +18,10 @@ import { Toaster } from '@/components/ui/toaster';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { useToast } from '@/hooks/use-toast';
 import { logout } from '@/routes';
-import { create } from '@/routes/layanan';
+import { create, downloadResult } from '@/routes/layanan';
 import { SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { FileText, Package, Users, Wallet } from 'lucide-react';
+import { Download, FileText, Package, Users, Wallet } from 'lucide-react';
 
 import { AlertCircle, CheckCircle, Clock, LogOut } from 'lucide-react';
 import { JSX, useEffect, useMemo, useState } from 'react';
@@ -65,6 +65,10 @@ export default function UserHomePage({ requests }: any) {
         'Pengadaan Logistik': <Package className="h-5 w-5 text-blue-500" />,
         Kepegawaian: <Users className="h-5 w-5 text-emerald-500" />,
         Persuratan: <FileText className="h-5 w-5 text-violet-500" />,
+    };
+
+    const downloadFile = (code: string) => {
+        window.location.href = downloadResult.url(code);
     };
 
     const paginatedData = useMemo(() => {
@@ -264,7 +268,7 @@ export default function UserHomePage({ requests }: any) {
                                 >
                                     <CardContent className="p-4 md:p-6">
                                         <div className="flex items-start gap-4">
-                                            <div className="flex-shrink-0 text-2xl md:text-3xl">
+                                            <div className="flex-shrink-0 text-2xl md:text-4xl">
                                                 {categoryIcons[
                                                     request?.kategori
                                                         ?.nama_kategori
@@ -285,11 +289,18 @@ export default function UserHomePage({ requests }: any) {
                                                             {request.detail}
                                                         </p>
                                                     </div>
-                                                    <div
-                                                        className={`flex flex-shrink-0 items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${s.color}`}
-                                                    >
-                                                        <StatusIcon className="h-3 w-3 md:h-4 md:w-4" />
-                                                        {request.status}
+
+                                                    <div>
+                                                        <h3 className="mb-2 pr-1.5 text-right text-xs font-semibold text-foreground">
+                                                            {'#' +
+                                                                request?.kode_layanan}
+                                                        </h3>
+                                                        <div
+                                                            className={`flex flex-shrink-0 items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${s.color}`}
+                                                        >
+                                                            <StatusIcon className="h-3 w-3 md:h-4 md:w-4" />
+                                                            {request.status}
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -306,6 +317,34 @@ export default function UserHomePage({ requests }: any) {
                                                         },
                                                     )}
                                                 </p>
+
+                                                {request.status === 'Selesai' &&
+                                                    request.result_document && (
+                                                        <div className="mt-3 border-t border-border pt-3">
+                                                            <div className="flex items-center justify-between rounded-md bg-muted/30 p-2">
+                                                                <div className="flex items-center gap-2">
+                                                                    <FileText className="h-4 w-4 text-primary" />
+                                                                    <span className="text-xs font-medium">
+                                                                        Dokumen
+                                                                        Hasil.pdf
+                                                                    </span>
+                                                                </div>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    className="h-7 gap-1 bg-transparent text-xs"
+                                                                    onClick={() =>
+                                                                        downloadFile(
+                                                                            request?.kode_layanan,
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <Download className="h-3 w-3" />
+                                                                    Unduh
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    )}
                                             </div>
                                         </div>
                                     </CardContent>

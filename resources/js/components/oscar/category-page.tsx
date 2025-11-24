@@ -12,10 +12,11 @@ import {
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { destroy, status } from '@/routes/layanan';
-import { Layanan } from '@/types';
-import { router } from '@inertiajs/react';
-import { Calendar, Clock, Trash2, Users } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { destroy, show, status } from '@/routes/layanan';
+import { Layanan, SharedData } from '@/types';
+import { Link, router, usePage } from '@inertiajs/react';
+import { Calendar, Clock, Eye, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface initialProps {
@@ -36,6 +37,9 @@ export function CategoryPage({
     useEffect(() => {
         setData(layanan);
     }, [layanan]);
+
+    const { flash } = usePage<SharedData>().props;
+    const { toast } = useToast();
 
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -89,9 +93,6 @@ export function CategoryPage({
 
     const handleDelete = (kodeLayanan: string) => {
         router.delete(destroy.url(kodeLayanan), {
-            onSuccess: () => {
-                //
-            },
             onError: (errors) => {
                 console.error('Error updating status:', errors);
             },
@@ -115,6 +116,15 @@ export function CategoryPage({
         setPageSize(newSize);
         setCurrentPage(1);
     };
+
+    useEffect(() => {
+        if (flash.success) {
+            toast({
+                title: 'Berhasil',
+                description: flash.success,
+            });
+        }
+    }, [flash.success]);
 
     return (
         <div>
@@ -215,9 +225,9 @@ export function CategoryPage({
                                             <th className="px-4 py-3 text-left font-semibold text-foreground">
                                                 Jabatan
                                             </th>
-                                            <th className="px-4 py-3 text-left font-semibold text-foreground">
+                                            {/* <th className="px-4 py-3 text-left font-semibold text-foreground">
                                                 Detail
-                                            </th>
+                                            </th> */}
                                             <th className="px-4 py-3 text-left font-semibold text-foreground">
                                                 Status
                                             </th>
@@ -254,9 +264,9 @@ export function CategoryPage({
                                                 <td className="px-4 py-3 text-nowrap text-foreground">
                                                     {service.user?.jabatan}
                                                 </td>
-                                                <td className="max-w-xs truncate px-4 py-3 text-foreground">
+                                                {/* <td className="max-w-xs truncate px-4 py-3 text-foreground">
                                                     {service.detail}
-                                                </td>
+                                                </td> */}
                                                 <td className="px-4 py-3">
                                                     <select
                                                         value={service.status}
@@ -279,7 +289,7 @@ export function CategoryPage({
                                                         </option>
                                                     </select>
                                                 </td>
-                                                <td className="px-4 py-3">
+                                                {/* <td className="px-4 py-3">
                                                     <button
                                                         onClick={() =>
                                                             setDeleteConfirm(
@@ -291,6 +301,18 @@ export function CategoryPage({
                                                         <Trash2 className="h-3 w-3" />
                                                         Hapus
                                                     </button>
+                                                </td> */}
+
+                                                <td className="px-5 py-4">
+                                                    <Link
+                                                        href={show.url(
+                                                            service.kode_layanan,
+                                                        )}
+                                                        className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80"
+                                                    >
+                                                        <Eye className="h-3 w-3" />
+                                                        Lihat Detail
+                                                    </Link>
                                                 </td>
                                             </tr>
                                         ))}
